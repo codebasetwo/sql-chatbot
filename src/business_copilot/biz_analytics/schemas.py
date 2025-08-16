@@ -1,0 +1,19 @@
+from pydantic import BaseModel, Field
+from langmem.short_term import RunningSummary
+from langgraph.prebuilt.chat_agent_executor import AgentState
+
+class State(AgentState):
+    # NOTE: We're adding this key to keep track of previous summary information
+    # to make sure we're not summarizing on every LLM call
+    context: dict[str, RunningSummary]
+
+
+class QuerySchema(BaseModel):
+    query: str = Field(description="an input that contains the generated SQL query")
+
+class TableArgSchema(BaseModel):
+    table_names: list[str] = Field(description="a list containing the names of the relevant table in a database.")
+
+class ErrorQuerySchema(BaseModel):
+    query: str = Field(description="an input that contains the generated SQL query")
+    error: str =  Field(description="an input that contains the generated SQL query")
